@@ -2,7 +2,11 @@ import bcrypt from 'bcrypt';
 import { db } from '@vercel/postgres';
 import { invoices, customers, revenue, users } from '../lib/placeholder-data';
 
+console.log("ROUTE INITIATED");
+
 const client = await db.connect();
+
+console.log("CLIENT CREATED");
 
 async function seedUsers() {
   await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
@@ -102,17 +106,23 @@ async function seedRevenue() {
 }
 
 export async function GET() {
-  return Response.json({
-    message:
-      'Uncomment this file and remove this line. You can delete this file when you are finished.',
-  });
+  // return Response.json({
+  //   message:
+  //     'Uncomment this file and remove this line. You can delete this file when you are finished.',
+  // });
   try {
     await client.sql`BEGIN`;
+    console.log("SQL BEGIN");
     await seedUsers();
+    console.log("USERS SEEDED");
     await seedCustomers();
+    console.log("CUSTOMERS SEEDED");
     await seedInvoices();
+    console.log("INCOICES SEEDED");
     await seedRevenue();
+    console.log("REVENUE SEEDED");
     await client.sql`COMMIT`;
+    console.log("COMMITED");
 
     return Response.json({ message: 'Database seeded successfully' });
   } catch (error) {
